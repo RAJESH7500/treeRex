@@ -1,28 +1,25 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Filter from './components/Filter';
 import ProductList from './components/ProductList';
-import Header from './components/Header';
 import { connect } from 'react-redux';
+import { filterData } from './constant';
+import { createPortal } from 'react-dom';
 function Home({ products }) {
   const [data, setData] = useState(products);
-  const [fdata, setfData] = useState([products]);
+  const [filters, setFilters] = useState(filterData);
   const [cart, setCart] = useState([]);
-  const [color, setColor] = useState({
-    red: false,
-    blue: false,
-    green: false,
+  const [searchText, setSearchText] = useState('');
+  const [showFilter, setShowFilter] = useState(false);
+  const addFilter = (key, item) => {
+    const filtersClone = { ...filters };
+    filtersClone[key].forEach((filter) => {
+      if (filter.name === item.name) {
+        filter.isActive = !filter.isActive;
+      }
+    });
+    setFilters(filtersClone);
+  };
 
-    men: false,
-    women: false,
-
-    first: 0,
-    second: 0,
-    third: 0,
-
-    polo: false,
-    hoodie: false,
-    basic: false,
-  });
   const check = (cart, item) => {
     for (let i = 0; i < cart.length; i++) {
       if (cart.nam === item.name) return true;
@@ -30,74 +27,100 @@ function Home({ products }) {
     return false;
   };
   const cartOnClick = (item) => {
-    console.log('cart onClick called');
     if (check(cart, item)) {
       cart.forEach((p) => {
         if (p.name === item.name) p.quantity += 1;
       });
     } else setCart([...cart, item]);
   };
-  const filterItem = () => {
-    const newItem = products.filter((pro) => {
-      const color1 = pro.color;
-      const type = pro.type;
-      // const price = pro.price.toLowerCase();
-      // const gender = pro.gender.toLowerCase();
-      const colorCond =
-        (color.red && color1.includes('Red')) ||
-        (color.blue && color1.includes('Blue')) ||
-        (color.green && color1.includes('Green'));
-      const typeCond =
-        (color.polo && type.includes('Polo')) ||
-        (color.hoodie && type.includes('Hoodie')) ||
-        (color.basic && type.includes('Basic'));
-      return colorCond && typeCond;
-    });
-    setData(newItem);
-    console.log('apply called');
-    console.log('color is ', color);
+
+  const updateFilterData = () => {
+    const colors = filters['color']
+      .filter((item) => item.isActive)
+      .map((item) => item.value);
+    const gender = filters['gender']
+      .filter((item) => item.isActive)
+      .map((item) => item.value);
+    const price = filters['price']
+      .filter((item) => item.isActive)
+      .map((item) => item.value);
+    const type = filters['type']
+      .filter((item) => item.isActive)
+      .map((item) => item.value);
+    let filteredData = products;
+    if (colors.length) {
+      filteredData = products.filter((product) =>
+        colors.includes(product.color.toLowerCase())
+      );
+    }
+    if (gender.length) {
+      filteredData = products.filter((product) =>
+        gender.includes(product.gender.toLowerCase())
+      );
+    }
+    if (type.length) {
+      filteredData = products.filter((product) =>
+        type.includes(product.type.toLowerCase())
+      );
+    }
+    if (price.length) {
+      let min = 0,
+        max = 0;
+      min = Number(price[0].split('-')[0]);
+      max = Number(price.at(-1).split('-')[1]);
+      if (!max) max = Number.MAX_SAFE_INTEGER;
+      filteredData = products.filter(
+        (product) => product.price >= min && product.price <= max
+      );
+    }
+    setData(filteredData);
   };
 
-  console.log('data is ', data);
+  const handleSearch = () => {
+    if (searchText.length) {
+      const filteredData = products.filter(
+        (product) =>
+          product.type.toLowerCase().includes(searchText.toLocaleLowerCase()) ||
+          product.name.toLowerCase().includes(searchText.toLocaleLowerCase())
+      );
+      setData(filteredData);
+    }
+  };
+  useEffect(() => {
+    updateFilterData();
+  }, [filters]);
+  console.log('show filter value is ', showFilter);
   return (
     <div className="home">
-      <div className="row justify-content-end">
-        <div className="col-md-9 col-sm-12">
-          <div className="row justify-content-center">
-            <div className="col-auto search">
-              <input
-                type="search"
-                placeholder="Search for product"
-                className="searchBar"
-              />
-              <span className="searchIcon">
-                <i class="fa fa-search" aria-hidden="true"></i>
-              </span>
-              <span className="filterIcon d-md-none">
-                <i className="fa-solid fa-filter"></i>
-              </span>
-            </div>
-          </div>
-        </div>
+      <div className="search">
+        <input
+          type="search"
+          placeholder="Search for product"
+          className="searchBar"
+          name="search"
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+        />
+        <span
+          className="search-icon search-button-container"
+          onClick={handleSearch}
+        >
+          <img src="./search-icon-2.png" width="35px" height="35px" />
+        </span>
+        <span className="filter-icon" onClick={() => setShowFilter(true)}>
+          <img src="./filter-icon.png" width="30px" height="30px" />
+        </span>
       </div>
-      <div className="container">
-        <div className="row justify-content-center">
-          <div className="col-md-3">
-            <div className="d-none d-sm-block filter">
-              <Filter
-                filterItem={filterItem}
-                color={color}
-                setColor={setColor}
-              />
-            </div>
-          </div>
-          <div className="col-md-9 col-sm-12">
-            {data.length > 0 ? (
-              <ProductList data={data} cartOnClick={cartOnClick} />
-            ) : (
-              <p className="text-center">No products found..!</p>
-            )}
-          </div>
+      <div className="container-home">
+        <div className="filter col-25">
+          <Filter filters={filters} addFilter={addFilter} />
+        </div>
+        <div className="list col-75 card-container">
+          {data.length > 0 ? (
+            <ProductList data={data} cartOnClick={cartOnClick} />
+          ) : (
+            <p className="text-center">No products found..!</p>
+          )}
         </div>
       </div>
     </div>

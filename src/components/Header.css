@@ -1,0 +1,28 @@
+.navbar {
+  height: 50px;
+  background-color: #d3d3d3;
+  padding-left: 20px;
+  padding-right: 20px;
+  width: 100%;
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.right-nav {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+ul {
+  list-style: none;
+}
