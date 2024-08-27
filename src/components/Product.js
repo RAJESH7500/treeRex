@@ -1,6 +1,6 @@
 import React from 'react';
 
-function Product({ product, cartOnClick }) {
+function Product({ product, addProductToCart }) {
   return (
     <div className="card" style={{ width: '15rem' }}>
       <img
@@ -17,13 +17,9 @@ function Product({ product, cartOnClick }) {
 
       <div className="info">
         <p className="price">Rs {product.price}</p>
-        <a
-          type="button"
-          className="btn btn-dark"
-          // onClick={cartOnClick(product)}
-        >
+        <button className="button" onClick={() => addProductToCart(product)}>
           Add to cart
-        </a>
+        </button>
       </div>
     </div>
   );

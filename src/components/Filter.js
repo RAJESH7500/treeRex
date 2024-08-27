@@ -1,17 +1,24 @@
 import React from 'react';
 
-function Filter({ filters, addFilter }) {
+function Filter({ filters, addFilter, isOpen, setIsOpen }) {
+  if (!isOpen) {
+    return null;
+  }
   return (
     <div className="filterCard">
+      <button className="close-button" onClick={() => setIsOpen(!isOpen)}>
+        close
+      </button>
       <h3>Colour</h3>
       <form className="color-form" action="">
         {filters.color.map((item) => (
-          <div class="checkbox-container">
+          <div class="checkbox-container" key={item.id}>
             <input
               type="checkbox"
               id={item.value}
               name={item.value}
               onChange={() => addFilter('color', item)}
+              checked={item.isActive}
             />
             <label for="myCheckbox">{item.name}</label>
           </div>
@@ -20,12 +27,13 @@ function Filter({ filters, addFilter }) {
       <h3 className="mt-2">Gender</h3>
       <form className="color-form" action="">
         {filters.gender.map((item) => (
-          <div class="checkbox-container">
+          <div class="checkbox-container" key={item.id}>
             <input
               type="checkbox"
               id={item.value}
               name={item.value}
               onChange={() => addFilter('gender', item)}
+              checked={item.isActive}
             />
             <label for="myCheckbox">{item.name}</label>
           </div>
@@ -34,12 +42,13 @@ function Filter({ filters, addFilter }) {
       <h3 className="mt-2">Price</h3>
       <form className="color-form" action="">
         {filters.price.map((item) => (
-          <div class="checkbox-container">
+          <div class="checkbox-container" key={item.id}>
             <input
               type="checkbox"
               id={item.value}
               name={item.value}
               onChange={() => addFilter('price', item)}
+              checked={item.isActive}
             />
             <label for="myCheckbox">{item.name}</label>
           </div>
@@ -54,6 +63,7 @@ function Filter({ filters, addFilter }) {
               id={item.value}
               name={item.value}
               onChange={() => addFilter('type', item)}
+              checked={item.isActive}
             />
             <label for="myCheckbox">{item.name}</label>
           </div>

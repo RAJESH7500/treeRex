@@ -26,3 +26,13 @@ a {
 ul {
   list-style: none;
 }
+
+.nav-item {
+  position: relative;
+}
+.cart-count {
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  font-size: large;
+}

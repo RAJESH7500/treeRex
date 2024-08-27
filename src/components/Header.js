@@ -1,24 +1,21 @@
 import React from 'react';
 import './Header.css';
+import { Link } from 'react-router-dom';
 
-function Header() {
+function Header({ count }) {
   return (
     <nav className="navbar">
       <div className="container">
-        <a className="navbar-brand" href="/">
+        <Link className="navbar-brand" to="/">
           TeeRex Store
-        </a>
-
+        </Link>
         <ul className="right-nav">
-          <li className="nav-item active">
-            <a className="nav-link" href="#products">
-              Products
-            </a>
-          </li>
+          <li className="nav-item active">Products</li>
           <li className="nav-item">
-            <a className="nav-link" href="/checkout">
-              <img src="cart.png" width="40px" height="40px" />
-            </a>
+            <Link className="nav-link" to="/cart">
+              <span className="cart-count">{count}</span>
+              <img src="cart.png" alt="cart icon" width="40px" height="40px" />
+            </Link>
           </li>
         </ul>
       </div>
