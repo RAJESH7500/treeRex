@@ -13,17 +13,17 @@ export const updateFilterData = (filters, dataCopy) => {
     .map((item) => item.value);
   let filteredData = dataCopy;
   if (colors.length) {
-    filteredData = dataCopy.filter((product) =>
+    filteredData = filteredData.filter((product) =>
       colors.includes(product.color.toLowerCase())
     );
   }
   if (gender.length) {
-    filteredData = dataCopy.filter((product) =>
+    filteredData = filteredData.filter((product) =>
       gender.includes(product.gender.toLowerCase())
     );
   }
   if (type.length) {
-    filteredData = dataCopy.filter((product) =>
+    filteredData = filteredData.filter((product) =>
       type.includes(product.type.toLowerCase())
     );
   }
@@ -33,7 +33,7 @@ export const updateFilterData = (filters, dataCopy) => {
     min = Number(price[0].split('-')[0]);
     max = Number(price.at(-1).split('-')[1]);
     if (!max) max = Number.MAX_SAFE_INTEGER;
-    filteredData = dataCopy.filter(
+    filteredData = filteredData.filter(
       (product) => product.price >= min && product.price <= max
     );
   }

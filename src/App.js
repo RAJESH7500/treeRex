@@ -8,8 +8,18 @@ function App() {
   const [cartProducts, setCartProducts] = useState([]);
 
   const addProductToCart = (product) => {
-    setCartProducts([...cartProducts, product]);
+    const productsClone = [...cartProducts];
+    const findProduct = productsClone.find(
+      (item) => item.name === product.name
+    );
+    if (findProduct) findProduct.productQuantity += 1;
+    else {
+      product.productQuantity = 1;
+      productsClone.push(product);
+    }
+    setCartProducts(productsClone);
   };
+
   return (
     <BrowserRouter>
       <div className="App">

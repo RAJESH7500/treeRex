@@ -1,7 +1,7 @@
 import React from 'react';
 function Checkout({ cartProducts }) {
   const totalAmount = cartProducts.reduce(
-    (total, product) => (total += product.price),
+    (total, product) => (total += product.price * product.productQuantity),
     0
   );
   return (
@@ -18,7 +18,9 @@ function Checkout({ cartProducts }) {
             <div className="form-row">
               <div className="form-group">
                 <select className="form-control" name={p.name}>
-                  <option defaultValue="Qty: 1">Qty: 1</option>
+                  <option defaultValue="Qty: 1">
+                    Qty: {p.productQuantity}
+                  </option>
                   <option value="1">Qty: 2</option>
                   <option value="2">Qty: 3</option>
                   <option value="3">Qty: 4</option>

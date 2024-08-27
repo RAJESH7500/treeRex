@@ -263,4 +263,7 @@
   .col-25 {
     flex: 0 0 0%;
   }
+  .close-button {
+    display: block;
+  }
 }
